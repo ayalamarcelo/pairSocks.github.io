@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
   <title>Redirigiendo...</title>
   <script>
     sessionStorage.setItem('redirect-path', window.location.pathname);
     window.location.replace('/');
   </script>
 </head>
+
 <body>
   <p>Redirigiendo a la página principal...</p>
 </body>
+
 </html>

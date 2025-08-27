@@ -26,8 +26,6 @@ volverBtn.addEventListener("click", () => {
   step1.classList.add("active");
 });
 
-
-
 // Tabs
 tabButtons.forEach(btn => {
   btn.addEventListener("click", () => {
@@ -56,71 +54,6 @@ function guardarRegistro(registro) {
 function cargarCodigosSugeridos(registros) {
   const codigosUnicos = [...new Set(registros.map(r => r.codigo))];
   codigoList.innerHTML = codigosUnicos.map(c => `<option value="${c}">`).join("");
-}
-
-function mostrarResumenEnPantalla() {
-  const registros = JSON.parse(localStorage.getItem("registrosMedias")) || [];
-  if (registros.length === 0) {
-    resumenContenido.innerHTML = "<p>No hay datos.</p>";
-    return;
-  }
-
-  const resumenDiario = {};
-  registros.forEach(r => {
-    const key = r.fecha;
-    if (!resumenDiario[key]) {
-      resumenDiario[key] = { dia: r.dia, docenas: 0, sobrante: 0, primera: 0, segunda: 0, falladas: 0 };
-    }
-    resumenDiario[key].docenas += r.docenas;
-    resumenDiario[key].sobrante += r.sobrante;
-    resumenDiario[key].primera += r.primera;
-    resumenDiario[key].segunda += r.segunda;
-    resumenDiario[key].falladas += r.falladas;
-  });
-
-  let html = `<table><thead><tr>
-    <th>Fecha</th><th>Día</th><th>Docenas</th><th>Sobrante</th><th>1°</th><th>2°</th><th>Falladas</th>
-  </tr></thead><tbody>`;
-
-  Object.keys(resumenDiario).sort().forEach(fecha => {
-    const d = resumenDiario[fecha];
-    html += `<tr><td>${fecha}</td><td>${d.dia}</td><td>${d.docenas}</td><td>${d.sobrante}</td>
-    <td>${d.primera}</td><td>${d.segunda}</td><td>${d.falladas}</td></tr>`;
-  });
-
-  html += "</tbody></table>";
-  resumenContenido.innerHTML = html;
-}
-
-function mostrarRegistros() {
-  const registros = JSON.parse(localStorage.getItem("registrosMedias")) || [];
-  cargarCodigosSugeridos(registros);
-
-  if (registros.length === 0) {
-    listaRegistros.innerHTML = "<p>No hay registros aún.</p>";
-    return;
-  }
-
-  let html = "";
-  registros.forEach((r, i) => {
-    html += `
-      <div class="registro-card">
-        <p><strong>📅 Fecha:</strong> ${r.fecha} (${r.dia})</p>
-        <p><strong>📌 Código:</strong> ${r.codigo}</p>
-        <p><strong>🧦 Nombre:</strong> ${r.nombre}</p>
-        <p><strong>👕 Tipo:</strong> ${r.tipo}</p>
-        <p><strong>👤 Grupo:</strong> ${r.grupo}</p>
-        ${r.talle ? `<p><strong>📏 Talle:</strong> ${r.talle}</p>` : ""}
-        <p><strong>🎯 Docenas:</strong> ${r.docenas}</p>
-        <p><strong>🧮 Sobrantes:</strong> ${r.sobrante}</p>
-        <p><strong>✅ Primera:</strong> ${r.primera}</p>
-        <p><strong>⚠️ Segunda:</strong> ${r.segunda}</p>
-        <p><strong>❌ Falladas:</strong> ${r.falladas}</p>
-      </div>
-    `;
-  });
-
-  listaRegistros.innerHTML = html;
 }
 
 function mostrarResumenEnPantalla() {
@@ -190,6 +123,36 @@ function mostrarResumenEnPantalla() {
   resumenContenido.innerHTML = html;
 }
 
+function mostrarRegistros() {
+  const registros = JSON.parse(localStorage.getItem("registrosMedias")) || [];
+  cargarCodigosSugeridos(registros);
+
+  if (registros.length === 0) {
+    listaRegistros.innerHTML = "<p>No hay registros aún.</p>";
+    return;
+  }
+
+  let html = "";
+  registros.forEach((r, i) => {
+    html += `
+      <div class="registro-card">
+        <p><strong>📅 Fecha:</strong> ${r.fecha} (${r.dia})</p>
+        <p><strong>📌 Código:</strong> ${r.codigo}</p>
+        <p><strong>🧦 Nombre:</strong> ${r.nombre}</p>
+        <p><strong>👕 Tipo:</strong> ${r.tipo}</p>
+        <p><strong>👤 Grupo:</strong> ${r.grupo}</p>
+        ${r.talle ? `<p><strong>📏 Talle:</strong> ${r.talle}</p>` : ""}
+        <p><strong>🎯 Docenas:</strong> ${r.docenas}</p>
+        <p><strong>🧮 Sobrantes:</strong> ${r.sobrante}</p>
+        <p><strong>✅ Primera:</strong> ${r.primera}</p>
+        <p><strong>⚠️ Segunda:</strong> ${r.segunda}</p>
+        <p><strong>❌ Falladas:</strong> ${r.falladas}</p>
+      </div>
+    `;
+  });
+
+  listaRegistros.innerHTML = html;
+}
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -251,7 +214,6 @@ pdfBtn.addEventListener("click", async () => {
   pdf.save("listado_medias.pdf");
 });
 
-
 // WhatsApp
 whatsappBtn.addEventListener("click", () => {
   const text = document.getElementById("listaRegistros").innerText;
@@ -265,7 +227,6 @@ whatsappBtn.addEventListener("click", () => {
 // Fecha por defecto
 document.getElementById("fecha").valueAsDate = new Date();
 
-
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./sw.js")
@@ -274,19 +235,45 @@ if ("serviceWorker" in navigator) {
   });
 }
 
-const resumenPdfBtn = document.getElementById("resumenPdfBtn"); // suponiendo que existe
+const resumenPdfBtn = document.getElementById("resumenPdfBtn");
+if (resumenPdfBtn) {
+  resumenPdfBtn.addEventListener("click", async () => {
+    const element = document.getElementById("resumenContenido");
+    const canvas = await html2canvas(element);
+    const imgData = canvas.toDataURL("image/png");
 
-resumenPdfBtn.addEventListener("click", async () => {
-  const element = document.getElementById("resumenContenido");
-  const canvas = await html2canvas(element);
-  const imgData = canvas.toDataURL("image/png");
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF("p", "mm", "a4");
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF("p", "mm", "a4");
-  const imgProps = pdf.getImageProperties(imgData);
-  const pdfWidth = pdf.internal.pageSize.getWidth();
-  const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save("resumen_medias.pdf");
+  });
+}
 
-  pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-  pdf.save("resumen_medias.pdf");
+// Aquí la parte que activa la pestaña desde sessionStorage tras un 404
+document.addEventListener("DOMContentLoaded", () => {
+  const redirectPath = sessionStorage.getItem('redirect-path');
+  if (redirectPath) {
+    sessionStorage.removeItem('redirect-path');
+
+    const tab = redirectPath.replace('/', '');
+
+    const tabBtn = document.querySelector(`.tab-btn[data-tab="${tab}"]`);
+    const tabContent = document.getElementById(tab);
+
+    if (tabBtn && tabContent) {
+      // Limpiar clases active
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(sec => sec.classList.remove('active'));
+
+      tabBtn.classList.add('active');
+      tabContent.classList.add('active');
+
+      if (tab === "listado") mostrarRegistros();
+      if (tab === "resumen") mostrarResumenEnPantalla();
+    }
+  }
 });

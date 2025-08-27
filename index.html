@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pair Socks</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="./images/icon/icon.png" type="image/png" />
+    <meta name="theme-color" content="#4caf50" />
+
+</head>
+
+<body>
+    <main>
+        <h1>Pair<img src="./images/icon/icon.png" alt="logo">Socks</h1>
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="registro">Registrar</button>
+            <button class="tab-btn" data-tab="listado">Registros</button>
+            <button class="tab-btn" data-tab="resumen">Resumen</button>
+        </nav>
+
+        <section id="registro" class="tab-content active">
+            <form id="mediaForm">
+                <div class="form-step step-1 active">
+                    <label>Fecha:
+                        <input type="date" id="fecha" required />
+                    </label>
+                    <label>Código:
+                        <input list="codigo-list" type="text" id="codigo" autocomplete="off" />
+                        <datalist id="codigo-list"></datalist>
+                    </label>
+                    <label>Nombre:
+                        <input type="text" id="nombre" />
+                    </label>
+                    <label>Tipo:
+                        <select id="tipo">
+                            <option value="Soquete">Soquete</option>
+                            <option value="Media larga">Media larga</option>
+                        </select>
+                    </label>
+                    <label>Grupo:
+                        <select id="grupo">
+                            <option value="Niño">Niño</option>
+                            <option value="Dama">Dama</option>
+                            <option value="Hombre">Hombre</option>
+                        </select>
+                    </label>
+                    <button type="button" id="siguienteBtn">Siguiente</button>
+                </div>
+
+                <div class="form-step step-2">
+                    <label>Talle:
+                        <input type="text" id="talle" />
+                    </label>
+                    <label>Docenas:
+                        <input type="number" id="docenas" min="0" value="0" />
+                    </label>
+                    <label>Sobrante:
+                        <input type="number" id="sobrante" min="0" value="0" />
+                    </label>
+                    <label>De primera:
+                        <input type="number" id="primera" min="0" value="0" />
+                    </label>
+                    <label>De segunda:
+                        <input type="number" id="segunda" min="0" value="0" />
+                    </label>
+                    <label>Falladas:
+                        <input type="number" id="falladas" min="0" value="0" />
+                    </label>
+                    <div class="btn-group">
+                        <button type="button" id="volverBtn">Volver</button>
+                        <button type="submit">Guardar Registro</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <section id="listado" class="tab-content">
+            <h2>Listado de Registros</h2>
+            <div class="btn-group">
+                <button id="exportarBtn">Excel</button>
+                <button id="pdfBtn">PDF</button>
+                <button id="whatsappBtn">WhatsApp</button>
+                <button id="limpiarBtn">Limpiar</button>
+            </div>
+            <div id="listaRegistros"></div>
+        </section>
+
+        <section id="resumen" class="tab-content">
+            <h2>Resumen</h2>
+            <div id="resumenContenido"></div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
